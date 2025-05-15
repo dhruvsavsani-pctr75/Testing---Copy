@@ -1,0 +1,175 @@
+@{
+    ViewData["Title"] = "Job Applications";
+    Layout = "_Main";
+}
+
+<div class="p-5">
+    <form id="jobApplicationTableStatus">
+        <input type="text" name="CurrentPage" id="CurrentPage" class="d-none" hidden>
+        <input type="text" name="PageSize" id="PageSize" class="d-none" hidden>
+        <input type="text" name="SearchQuery" id="SearchQuery" placeholder="Search job application" class="mb-3"
+            onkeyup="">
+    </form>
+    <a href="/job" class="mb-4">
+        <button type="button" class="btn btn-primary">Back</button>
+        <div id="jobApplicationTableDiv">
+    </a>
+
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="jobApplicationStatus" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Job application status</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <form id="jobApplicationStatusForm">
+                    <select class="form-select" aria-label="Default select example" name="Status">
+                        <option value="Select" selected>Select a job application status</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Interviewing">Interviewing</option>
+                        <option value="Offered">Offered</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="changeStatusSaveButton">Save</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deletejobApplicationModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="fs-4">You want to delete this job application ?</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="deleteYesbutton" data-bs-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section jobapplicationscript {
+    <script>
+        function getJobApplicationTable() {
+            let form = $('#jobApplicationTableStatus')[0]
+            let formData = new FormData(form)
+
+            @* for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            } *@
+
+                $.ajax({
+                    url: '/jobapplicationtable',
+                    method: 'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        $('#jobApplicationTableDiv').html(res)
+                        $('#orderPageSize').val($('#PageSize').val())
+                    },
+                    error: function (err) {
+                        toastr.error(err)
+                    }
+                })
+        }
+
+        function updatePageSize() {
+            $('#PageSize').val($('#orderPageSize').val())
+            getJobApplicationTable()
+        }
+
+        function navigatePage(page) {
+            $('#CurrentPage').val(page)
+            getJobApplicationTable()
+        }
+
+        function changeStatus(id) {
+            let form = $('#jobApplicationStatusForm')[0]
+            let formData = new FormData(form);
+
+            formData.append('Id', id)
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            $.ajax({
+                url: '/changejobstatus',
+                method: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (!(res.status == 'All Perfect')) {
+                        toastr.error(res.status)
+                    }
+                    getJobApplicationTable()
+                    $('#jobApplicationStatus').modal('hide')
+                    $('#jobApplicationStatusForm')[0].reset()
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        function changeJobApplicationView(id) {
+            $('#changeStatusSaveButton').off().on('click', function () {
+                changeStatus(id)
+            })
+        }
+
+        function deleteJobApplication(id) {
+            $.ajax({
+                url: '/deletejobapplication',
+                method: 'get',
+                data: { id: id },
+                success: function (res) {
+                    if (res.message == 'success') {
+                        getJobApplicationTable()
+                    }
+                    else {
+                        toastr.error(res.message)
+                    }
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        function deleteJobApplicationView(id) {
+            $('#deleteYesbutton').off().on('click', function () {
+                deleteJobApplication(id)
+            })
+        }
+
+        $(document).ready(function () {
+            $('#PageSize').val('5')
+            $('#CurrentPage').val('1')
+            getJobApplicationTable()
+        })
+    </script>
+}

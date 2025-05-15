@@ -1,0 +1,69 @@
+@{
+    ViewData["Title"] = "EditJob";
+    Layout = "_Main";
+}
+
+
+
+<div class="p-5" id="editjobFormDiv">
+
+</div>
+
+@section editjobscript {
+    <script>
+        function submiteditJobForm() {
+            let form = $('#addjobForm')[0]
+
+            let formData = new FormData(form)
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            $.ajax({
+                url: '/editjob',
+                method: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.redireUrl) {
+                        window.location.href = res.redireUrl
+                    }
+                    else if (res.message) {
+                        toastr.err(res.message)
+                    }
+                    else {
+                        $('#editjobFormDiv').html(res)
+                    }
+
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        function getAddjobFormView() {
+            $.ajax({
+                url: '/addjobform',
+                method: 'get',
+                data: { id: document.URL.toString().split('/')[document.URL.toString().split('/').length - 1] },
+                success: function (res) {
+                    $('#editjobFormDiv').html(res)
+                    $('#jobSaveButton').off('click').on('click', function () {
+                        event.preventDefault()
+                        submiteditJobForm()
+                    })
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            getAddjobFormView()
+        })
+    </script>
+}

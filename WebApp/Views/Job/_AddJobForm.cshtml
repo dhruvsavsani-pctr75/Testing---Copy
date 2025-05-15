@@ -1,0 +1,44 @@
+@model WebApp.Entities.ViewModels.Job.AddJobViewModel;
+
+@{
+    if (Model.Id == 0)
+    {
+        <div class="mb-3 h1 text-primary">Add Job</div>
+    }
+    else
+    {
+        <div class="mb-3 h1 text-primary">Edit Job</div>
+    }
+}
+
+<form id="addjobForm">
+    <input type="text" asp-for="Id" class="d-none" hidden>
+    <div class="mb-3">
+        <label for="jobTitle" class="form-label fs-4">job Title</label>
+        <input type="text" class="form-control mb-1" id="jobTitle" placeholder="Enter job title" asp-for="Title">
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Title)</p>
+    </div>
+    <div class="mb-3">
+        <label for="jobDescription" class="form-label fs-4">Job Description</label>
+        <textarea class="form-control mb-1" id="jobDescription" rows="3" placeholder="Enter job description"
+            asp-for="Description"></textarea>
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Description)</p>
+    </div>
+    <div class="mb-3">
+        <label for="company" class="form-label fs-4">Company</label>
+        <input type="text" class="form-control mb-1" id="company" placeholder="Enter company name"
+            asp-for="CompanyName">
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.CompanyName)</p>
+    </div>
+    <div class="mb-3">
+        <label for="location" class="form-label fs-4">Location</label>
+        <textarea class="form-control mb-1" id="location" rows="3" placeholder="Enter location"
+            asp-for="Location"></textarea>
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Location)</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary" id="jobSaveButton">Save</button>
+    <a href="/job">
+        <button type="button" class="btn btn-warning">Cancel</button>
+    </a>
+</form>

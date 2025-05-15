@@ -4,11 +4,11 @@ using WebApp.Repositories.Interface;
 
 namespace WebApp.Repositories.Implementation;
 
-public class UserRepository : GenericRepository<User>, IUserRepository
+public class JobRepository : GenericRepository<Job>, IJobRepository
 {
     private readonly TestFinalContext _context;
 
-    public UserRepository(TestFinalContext context) : base(context)
+    public JobRepository(TestFinalContext context) : base(context)
     {
         _context = context;
     }

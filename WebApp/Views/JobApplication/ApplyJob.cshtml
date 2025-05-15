@@ -1,0 +1,68 @@
+@{
+    ViewData["Title"] = "Apply Job";
+    Layout = "_Main";
+}
+
+
+
+<div class="p-5">
+    <div class="h1 mb-5">Job Application</div>
+    <div id="applyJobFormDiv">
+
+    </div>
+</div>
+
+@section applyjobscript {
+    <script>
+        function getApplyJobForm() {
+            $.ajax({
+                url: '/applyjobform',
+                method: 'get',
+                success: function (res) {
+                    $('#applyJobFormDiv').html(res)
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        function submitApplyJobForm() {
+            let form = $('#applyJobForm')[0]
+            let formData = new FormData(form);
+
+            formData.delete('Id')
+            formData.append('Id', document.URL.toString().split('/')[document.URL.toString().split('/').length - 1])
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            $.ajax({
+                url: '/applyjob',
+                method: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.redirectUrl) {
+                        window.location.href = res.redirectUrl
+                    }
+                    else if (res.message) {
+                        toastr.error(res.message)
+                    }
+                    else {
+                        $('#applyJobFormDiv').html(res)
+                    }
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            getApplyJobForm()
+        })
+    </script>
+}

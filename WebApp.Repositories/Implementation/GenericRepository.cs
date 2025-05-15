@@ -6,9 +6,9 @@ namespace WebApp.Repositories.Implementation;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
-    private readonly TestingFinalContext _context;
+    private readonly TestFinalContext _context;
 
-    public GenericRepository(TestingFinalContext context)
+    public GenericRepository(TestFinalContext context)
     {
         _context = context;
     }

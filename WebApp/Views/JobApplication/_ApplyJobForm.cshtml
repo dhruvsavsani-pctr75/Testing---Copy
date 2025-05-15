@@ -1,0 +1,16 @@
+@model WebApp.Entities.ViewModels.JobApplication.ApplyJobViewModel;
+
+<form id="applyJobForm" enctype="multipart/form-data">
+    <input type="text" asp-for="Id" class="d-none" hidden>
+    <div class="mb-3">
+        <label for="resume" class="form-label fs-4">Upload Resume</label>
+        <input class="form-control mb-1" type="file" id="resume" asp-for="Resume">
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Resume)</p>
+    </div>
+
+
+    <button type="button" class="btn btn-primary" onclick="submitApplyJobForm()">Save</button>
+    <a href="/job">
+        <button type="button" class="btn btn-warning">Cancel</button>
+    </a>
+</form>

@@ -22,6 +22,11 @@ public class HomeController : Controller
     [Route("/login")]
     public IActionResult Login()
     {
+        string? Authorization = HttpContext.Request.Cookies["Authorization"];
+        if (Authorization != null)
+        {
+            return Redirect("/job");
+        }
         return View();
     }
 
@@ -41,7 +46,7 @@ public class HomeController : Controller
             string message = _homeServices.Login(loginViewModel);
             if (message == "All Perfect")
             {
-                return Json(new { redirectUrl = "/home" });
+                return Json(new { redirectUrl = "/job" });
             }
             ModelState.AddModelError("customerErrorMessage", message);
             return PartialView("_LoginForm", loginViewModel);
@@ -53,6 +58,7 @@ public class HomeController : Controller
     [Authorize(Roles = "Admin,User")]
     public IActionResult Logout()
     {
+        _homeServices.Logout();
         return Redirect("/");
     }
 

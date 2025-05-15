@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Job";
+    Layout = "_Main";
+}
+
+<div class="p-5">
+    <div class="d-flex justify-content-between mb-5">
+        <div>
+            @{
+                if (User.IsInRole("Admin"))
+                {
+                    <a href="/addjob">
+                        <button type="button" class="btn btn-primary">Add job</button>
+                    </a>
+
+                    <a href="/jobapplication">
+                        <button type="button" class="btn btn-primary">View Job Application</button>
+                    </a>
+                }
+            }
+
+        </div>
+        <div>
+            <form id="jobtableStatus">
+                <input type="text" name="CurrentPage" id="CurrentPage" class="d-none" hidden>
+                <input type="text" name="PageSize" id="PageSize" class="d-none" hidden>
+                <input type="text" name="SearchQuery" id="SearchQuery" placeholder="Search job" onkeyup="getJobTable()">
+            </form>
+        </div>
+    </div>
+    <div id="jobtableDiv">
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="deletejobModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Confirmation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="fs-4">You want to delete this job ?</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="deleteYesbutton" data-bs-dismiss="modal">Yes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section jobscript {
+    <script>
+        function getJobTable() {
+            let form = $('#jobtableStatus')[0]
+            let formData = new FormData(form)
+
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ": " + pair[1]);
+            }
+
+            $.ajax({
+                url: '/getjobtable',
+                method: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    $('#jobtableDiv').html(res)
+                    $('#orderPageSize').val($('#PageSize').val())
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        function updatePageSize() {
+            $('#PageSize').val($('#orderPageSize').val())
+            getJobTable()
+        }
+
+        function navigatePage(page) {
+            $('#CurrentPage').val(page)
+            getJobTable()
+        }
+
+        function deleteJob(id) {
+            $.ajax({
+                url: '/deletejob',
+                method: 'get',
+                data: { id: id },
+                success: function (res) {
+                    if (res.status == 'success') {
+                        getJobTable()
+                    }
+                    else {
+                        toastr.error(res.status)
+                    }
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        function deleteJobView(id) {
+            $('#deleteYesbutton').off().on('click', function () {
+                deleteJob(id)
+            })
+        }
+
+        function applyJobView(id) {
+
+        }
+
+        $(document).ready(function () {
+            $('#PageSize').val('5')
+            $('#CurrentPage').val('1')
+            getJobTable()
+        })
+    </script>
+}

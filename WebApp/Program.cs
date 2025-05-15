@@ -18,17 +18,21 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddDbContext<TestingFinalContext>(options =>
+builder.Services.AddDbContext<TestFinalContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), builder => builder.MigrationsAssembly("WebApp"))
 );
 
 // Register the Repository Layer
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
 
 
 // Register the Service Layer 
 builder.Services.AddScoped<IAddFunctionality, AddFunctionality>();
 builder.Services.AddScoped<IHomeServices, HomeServices>();
+builder.Services.AddScoped<IJobServices, JobServices>();
+builder.Services.AddScoped<IJobApplicationServices, JobApplicationServices>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

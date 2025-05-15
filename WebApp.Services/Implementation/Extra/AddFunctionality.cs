@@ -4,17 +4,23 @@ namespace WebApp.Services.Implementation.Extra;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using WebApp.Services.InterFace.Extra;
 
 public class AddFunctionality : IAddFunctionality
 {
     private readonly IConfiguration _configuration;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public AddFunctionality(IConfiguration configuration)
+    public AddFunctionality(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment webHostEnvironment)
     {
         _configuration = configuration;
+        _httpContextAccessor = httpContextAccessor;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public string GenerateJWTTokenRole(string userRole, string userName, int userId)
@@ -55,4 +61,38 @@ public class AddFunctionality : IAddFunctionality
             return false;
         }
     }
+
+    public int getLogedInUserId()
+    {
+        string? userIdSrting = _httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (int.TryParse(userIdSrting, out int userId))
+        {
+            return userId;
+        }
+        return 1;
+    }
+
+    public string UploadResume(IFormFile file)
+    {
+        if (file != null)
+        {
+            string uploadDirecotroy = @"uploads\";
+            string uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, uploadDirecotroy);
+            uploadPath = uploadPath.Replace("\\", "/");
+
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+
+            string fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+            string filePath = Path.Combine(uploadPath, fileName);
+
+            using (FileStream strem = File.Create(filePath))
+            {
+                file.CopyTo(strem);
+            }
+            return fileName;
+        }
+        return "";
+    }
+
 }

@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "AddJob";
+    Layout = "_Main";
+}
+
+
+
+<div class="p-5" id="addjobFormDiv">
+
+</div>
+
+@section addjobscript {
+    <script>
+        function submitAddJobForm() {
+            let form = $('#addjobForm')[0]
+            let formData = new FormData(form)
+
+            $.ajax({
+                url: '/addjob',
+                method: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.redirectUrl) {
+                        window.location.href = res.redirectUrl
+                    }
+                    else {
+                        $('#addjobFormDiv').html(res)
+                        $('#jobSaveButton').off('click').on('click', function () {
+                            event.preventDefault()
+                            submitAddJobForm()
+                        })
+                    }
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        function getAddjobFormView() {
+            $.ajax({
+                url: '/addjobform',
+                method: 'get',
+                success: function (res) {
+                    $('#addjobFormDiv').html(res)
+                    $('#jobSaveButton').off('click').on('click', function () {
+                        event.preventDefault()
+                        submitAddJobForm()
+                    })
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
+        }
+
+        $(document).ready(function () {
+            getAddjobFormView()
+        })
+    </script>
+}
