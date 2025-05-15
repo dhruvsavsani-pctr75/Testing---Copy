@@ -34,9 +34,9 @@
             formData.delete('Id')
             formData.append('Id', document.URL.toString().split('/')[document.URL.toString().split('/').length - 1])
 
-            for (var pair of formData.entries()) {
+            @* for (var pair of formData.entries()) {
                 console.log(pair[0] + ": " + pair[1]);
-            }
+            } *@
 
             $.ajax({
                 url: '/applyjob',

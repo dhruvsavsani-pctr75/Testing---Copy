@@ -91,6 +91,7 @@ public class JobController : Controller
     }
 
     [Route("/apllieduser/{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult UserTable(int id)
     {
         return View(_jobServices.UserTable(id));

@@ -46,7 +46,9 @@ public class JobApplicationServices : IJobApplicationServices
             Status = "Applied",
             JobId = applyJobViewModel.Id,
             Resume = _addFunctionality.UploadResume(applyJobViewModel.Resume),
-            UserId = _addFunctionality.getLogedInUserId()
+            UserId = _addFunctionality.getLogedInUserId(),
+            Createdby = _addFunctionality.getLogedInUserId(),
+            Modifiedby = _addFunctionality.getLogedInUserId()
         };
 
         job.NoOfApplicant = job.NoOfApplicant + 1;
@@ -116,6 +118,8 @@ public class JobApplicationServices : IJobApplicationServices
         }
 
         jobapplication.Status = jobApplicationStatusViewModel.Status;
+        jobapplication.Modifiedby = _addFunctionality.getLogedInUserId();
+        jobapplication.Lastmodifiedtime = DateTime.Now;
         _jobApplicationRepository.Update(jobapplication);
         return "All Perfect";
     }
@@ -129,6 +133,8 @@ public class JobApplicationServices : IJobApplicationServices
         }
 
         jobapplication.Isdeleted = true;
+        jobapplication.Modifiedby = _addFunctionality.getLogedInUserId();
+        jobapplication.Lastmodifiedtime = DateTime.Now;
         _jobApplicationRepository.Update(jobapplication);
         return "success";
     }

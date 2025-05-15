@@ -106,6 +106,8 @@ public class JobServices : IJobServices
         job.Title = addJobViewModel.Title;
         job.Location = addJobViewModel.Location;
         job.Description = addJobViewModel.Description;
+        job.Lastmodifiedtime = DateTime.Now;
+        job.Modifiedby = _addFunctionality.getLogedInUserId();
         _jobRepositroy.Update(job);
         return "All Perfect";
     }
@@ -119,6 +121,8 @@ public class JobServices : IJobServices
         }
 
         job.Isdeleted = true;
+        job.Lastmodifiedtime = DateTime.Now;
+        job.Modifiedby = _addFunctionality.getLogedInUserId();
         _jobRepositroy.Update(job);
         return "success";
     }
