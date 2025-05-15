@@ -1,0 +1,12 @@
+<div class="navigation d-flex align-items-center justify-content-end text-bg-dark">
+    @* @User.Identities.First().Claims.First().Value *@
+    @* @User.Identities.ElementAt(0).Claims.ElementAt(1).Value *@
+    @{
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            <a href="/logout">
+                <button class="btn btn-primary me-3">Logout</button>
+            </a>
+        }
+    }
+</div>
