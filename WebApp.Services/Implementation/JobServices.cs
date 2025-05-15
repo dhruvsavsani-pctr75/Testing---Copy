@@ -110,6 +110,12 @@ public class JobServices : IJobServices
             return "This job not exist!";
         }
 
+int jobsCount = _jobRepositroy.GetQueryable().Where(j => !j.Isdeleted && j.CompanyName == addJobViewModel.CompanyName && j.Title == addJobViewModel.Title).Count();
+        if (jobsCount > 0)
+        {
+            return "You already added this job!";
+        }
+
         job.CompanyName = addJobViewModel.CompanyName;
         job.Title = addJobViewModel.Title;
         job.Location = addJobViewModel.Location;
