@@ -114,7 +114,7 @@ public class JobController : Controller
             string message = _jobServices.UserRegistraion(userRegistration);
             if (message == "All Perfect")
             {
-                return Redirect("/jobs");
+                return Redirect("/job");
 
             }
             ModelState.AddModelError("customerErrorMessage", message);
