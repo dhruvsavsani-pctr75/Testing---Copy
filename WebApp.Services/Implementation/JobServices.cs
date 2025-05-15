@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Entities.Models;
 using WebApp.Entities.ViewModels.Job;
@@ -110,7 +111,7 @@ public class JobServices : IJobServices
             return "This job not exist!";
         }
 
-int jobsCount = _jobRepositroy.GetQueryable().Where(j => !j.Isdeleted && j.CompanyName == addJobViewModel.CompanyName && j.Title == addJobViewModel.Title).Count();
+        int jobsCount = _jobRepositroy.GetQueryable().Where(j => !j.Isdeleted && j.CompanyName == addJobViewModel.CompanyName && j.Title == addJobViewModel.Title).Count();
         if (jobsCount > 0)
         {
             return "You already added this job!";
@@ -166,8 +167,9 @@ int jobsCount = _jobRepositroy.GetQueryable().Where(j => !j.Isdeleted && j.Compa
         User user = new();
         user.Username = userRegistration.Username;
         user.Password = _addFunctionality.MakeHash(userRegistration.Password);
+        user.RoleId = int.Parse(userRegistration.RoleId);
         user.Createdby = _addFunctionality.getLogedInUserId();
-          user.Modifiedby = _addFunctionality.getLogedInUserId();
+        user.Modifiedby = _addFunctionality.getLogedInUserId();
         _userRepository.Add(user);
         return "All Perfect";
     }
