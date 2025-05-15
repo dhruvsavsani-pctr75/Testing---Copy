@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "User";
+    Layout = "_Main";
+}
+
+@model WebApp.Entities.ViewModels.Job.UserRegistration;
+
+<form action="/userregistration" method="post">
+    <div class="mb-3">
+        <label for="jobTitle" class="form-label fs-4">Username</label>
+        <input type="text" class="form-control mb-1" id="jobTitle" placeholder="Enter job title" asp-for="Username">
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Username)</p>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label fs-4">Company</label>
+        <input type="text" class="form-control mb-1" id="password" placeholder="Enter password" asp-for="Password">
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Password)</p>
+    </div>
+    <div class="mb-3">
+        <label for="confirmpassword" class="form-label fs-4">Company</label>
+        <input type="text" class="form-control mb-1" id="confirmpassword" placeholder="Enter password"
+            asp-for="ConfirmPassword">
+        <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.ConfirmPassword)</p>
+    </div>
+    <div class="text-danger fw-bold">@Html.ValidationMessage("customerErrorMessage")</div>
+    <button type="submit" class="btn btn-primary" id="jobSaveButton">Save</button>
+    <a href="/job">
+        <button type="button" class="btn btn-warning">Cancel</button>
+    </a>
+</form>

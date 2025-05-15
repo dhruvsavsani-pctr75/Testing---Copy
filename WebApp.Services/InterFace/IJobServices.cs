@@ -10,4 +10,6 @@ public interface IJobServices
     string EditJob(AddJobViewModel addJobViewModel);
     string DeleteJob(int id);
     List<UserTableViewModel> UserTable(int id);
+
+    string UserRegistraion(UserRegistration userRegistration);
 }

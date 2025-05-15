@@ -16,6 +16,10 @@
                     <a href="/jobapplication">
                         <button type="button" class="btn btn-primary">View Job Application</button>
                     </a>
+
+                    <a href="/userregistration">
+                        <button type="button" class="btn btn-primary">User Registration</button>
+                    </a>
                 }
             }
 
@@ -101,20 +105,20 @@
                 console.log(pair[0] + ": " + pair[1]);
             } *@
 
-            $.ajax({
-                url: '/getjobtable',
-                method: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    $('#jobtableDiv').html(res)
-                    $('#orderPageSize').val($('#PageSize').val())
-                },
-                error: function (err) {
-                    toastr.error(err)
-                }
-            })
+                $.ajax({
+                    url: '/getjobtable',
+                    method: 'post',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        $('#jobtableDiv').html(res)
+                        $('#orderPageSize').val($('#PageSize').val())
+                    },
+                    error: function (err) {
+                        toastr.error(err)
+                    }
+                })
         }
 
         function updatePageSize() {

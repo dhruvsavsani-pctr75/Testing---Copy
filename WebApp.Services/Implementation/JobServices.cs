@@ -11,16 +11,24 @@ public class JobServices : IJobServices
 {
     private readonly IJobRepository _jobRepositroy;
     private readonly IAddFunctionality _addFunctionality;
-
     private readonly IJobApplicationRepository _jobApplicationRepository;
-    public JobServices(IJobRepository jobRepositroy, IAddFunctionality addFunctionality, IJobApplicationRepository jobApplicationRepository)
+
+    private readonly IUserRepository _userRepository;
+    public JobServices(IJobRepository jobRepositroy, IAddFunctionality addFunctionality, IJobApplicationRepository jobApplicationRepository, IUserRepository userRepository)
     {
         _jobRepositroy = jobRepositroy;
         _addFunctionality = addFunctionality;
         _jobApplicationRepository = jobApplicationRepository;
+        _userRepository = userRepository;
     }
     public string AddJob(AddJobViewModel addJobViewModel)
     {
+        int jobsCount = _jobRepositroy.GetQueryable().Where(j => !j.Isdeleted && j.CompanyName == addJobViewModel.CompanyName && j.Title == addJobViewModel.Title).Count();
+        if (jobsCount > 0)
+        {
+            return "You already added this job!";
+        }
+
         Job job = new()
         {
             Title = addJobViewModel.Title,
@@ -141,4 +149,18 @@ public class JobServices : IJobServices
         return userTableViewModel;
     }
 
+    public string UserRegistraion(UserRegistration userRegistration)
+    {
+        int userCount = _userRepository.GetQueryable().Where(u => !u.Isdeleted && u.Username == userRegistration.Username).Count();
+        if (userCount > 0)
+        {
+            return "User exist with this username.";
+        }
+
+        User user = new();
+        user.Username = userRegistration.Username;
+        user.Password = userRegistration.Password;
+        _userRepository.Add(user);
+        return "All Perfect";
+    }
 }

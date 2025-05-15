@@ -46,7 +46,7 @@ public class JobController : Controller
             {
                 return Json(new { redirectUrl = "/job" });
             }
-            return PartialView("_AddJobForm", addJobViewModel);
+            return Json(new { message = message });
         }
         return PartialView("_AddJobForm", addJobViewModel);
     }
@@ -95,5 +95,31 @@ public class JobController : Controller
     public IActionResult UserTable(int id)
     {
         return View(_jobServices.UserTable(id));
+    }
+
+    [Route("/userregistration")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult UserRegistraion()
+    {
+        return View();
+    }
+
+    [Route("/userregistration")]
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public IActionResult UserRegistraion(UserRegistration userRegistration)
+    {
+        if (ModelState.IsValid)
+        {
+            string message = _jobServices.UserRegistraion(userRegistration);
+            if (message == "All Perfect")
+            {
+                return Redirect("/jobs");
+
+            }
+            ModelState.AddModelError("customerErrorMessage", message);
+            return View(userRegistration);
+        }
+        return View(userRegistration);
     }
 }
