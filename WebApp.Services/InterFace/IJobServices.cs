@@ -9,4 +9,5 @@ public interface IJobServices
     AddJobViewModel AddJobForm(int id);
     string EditJob(AddJobViewModel addJobViewModel);
     string DeleteJob(int id);
+    List<UserTableViewModel> UserTable(int id);
 }

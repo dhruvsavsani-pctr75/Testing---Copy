@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using WebApp.Entities.Models;
 using WebApp.Entities.ViewModels.Job;
 using WebApp.Repositories.Interface;
@@ -10,10 +11,13 @@ public class JobServices : IJobServices
 {
     private readonly IJobRepository _jobRepositroy;
     private readonly IAddFunctionality _addFunctionality;
-    public JobServices(IJobRepository jobRepositroy, IAddFunctionality addFunctionality)
+
+    private readonly IJobApplicationRepository _jobApplicationRepository;
+    public JobServices(IJobRepository jobRepositroy, IAddFunctionality addFunctionality, IJobApplicationRepository jobApplicationRepository)
     {
         _jobRepositroy = jobRepositroy;
         _addFunctionality = addFunctionality;
+        _jobApplicationRepository = jobApplicationRepository;
     }
     public string AddJob(AddJobViewModel addJobViewModel)
     {
@@ -116,4 +120,19 @@ public class JobServices : IJobServices
         _jobRepositroy.Update(job);
         return "success";
     }
+
+    public List<UserTableViewModel> UserTable(int id)
+    {
+        List<UserTableViewModel> userTableViewModel = _jobApplicationRepository.GetQueryable().Include(ja => ja.User)
+                                                                                        .Include(ja => ja.Job)
+                                                                                        .Where(ja => ja.Job.Id == id)
+                                                                                        .Select(x => new UserTableViewModel
+                                                                                        {
+                                                                                            Username = x.User.Username,
+                                                                                            Resume = x.Resume
+                                                                                        }).ToList();
+
+        return userTableViewModel;
+    }
+
 }

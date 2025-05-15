@@ -89,4 +89,10 @@ public class JobController : Controller
     {
         return Json(new { status = _jobServices.DeleteJob(id) });
     }
+
+    [Route("/apllieduser/{id}")]
+    public IActionResult UserTable(int id)
+    {
+        return View(_jobServices.UserTable(id));
+    }
 }
