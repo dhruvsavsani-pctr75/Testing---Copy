@@ -9,7 +9,7 @@
     <form action="/userregistration" method="post">
         <div class="mb-3">
             <label for="jobTitle" class="form-label fs-4">Username</label>
-            <input type="text" class="form-control mb-1" id="jobTitle" placeholder="Enter username" asp-for="Username">
+            <input type="text" class="form-control mb-1" id="jobTitle" placeholder="Enter Username" asp-for="Username">
             <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Username)</p>
         </div>
         <div class="mb-3">
@@ -22,6 +22,14 @@
             <input type="text" class="form-control mb-1" id="confirmpassword" placeholder="Enter password"
                 asp-for="ConfirmPassword">
             <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.ConfirmPassword)</p>
+        </div>
+        <div class="mb-3">
+            <select class="form-select" aria-label="Default select example" asp-for="RoleId">
+                <option disabled selected>Select Role</option>
+                <option value="1">Admin</option>
+                <option value="2">User</option>
+            </select>
+            <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.RoleId)</p>
         </div>
         <div class="text-danger fw-bold">@Html.ValidationMessage("customerErrorMessage")</div>
         <button type="submit" class="btn btn-primary" id="jobSaveButton">Save</button>
