@@ -160,6 +160,8 @@ public class JobServices : IJobServices
         User user = new();
         user.Username = userRegistration.Username;
         user.Password = _addFunctionality.MakeHash(userRegistration.Password);
+        user.Createdby = _addFunctionality.getLogedInUserId();
+          user.Modifiedby = _addFunctionality.getLogedInUserId();
         _userRepository.Add(user);
         return "All Perfect";
     }
