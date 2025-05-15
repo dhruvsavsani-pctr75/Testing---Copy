@@ -62,7 +62,11 @@ public class JobApplicationServices : IJobApplicationServices
         IQueryable<Jobapplication> jobApplicationQuery = _jobApplicationRepository.GetQueryable()
                                                             .Include(ja => ja.User)
                                                             .Include(ja => ja.Job)
-                                                            .Where(ja => !ja.Isdeleted);
+                                                            .Where(ja => !ja.Isdeleted && ja.Createdtime.Date <= jobApplicationTableViewModel.ToDate.Date && ja.Createdtime.Date >= jobApplicationTableViewModel.FromDate.Date);
+        if (jobApplicationTableViewModel.Status != "All")
+        {
+            jobApplicationQuery = jobApplicationQuery.Where(ja => ja.Status == jobApplicationTableViewModel.Status);
+        }
 
         if (!string.IsNullOrEmpty(jobApplicationTableViewModel.SearchQuery))
         {

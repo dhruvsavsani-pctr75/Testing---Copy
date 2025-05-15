@@ -8,4 +8,6 @@ public class JobTableViewModel
     public string SearchQuery { get; set; } = "";
     public int TotalPages { get; set; }
     public int TotalItems { get; set; }
+    public DateTime FromDate { get; set; } = DateTime.MinValue;
+    public DateTime ToDate { get; set; } = DateTime.Today;
 }

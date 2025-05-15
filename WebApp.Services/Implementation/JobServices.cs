@@ -37,13 +37,15 @@ public class JobServices : IJobServices
 
     public JobTableViewModel JobTable(JobTableViewModel jobTableViewModel)
     {
-        IQueryable<Job> jobQuery = _jobRepositroy.GetQueryable().Where(j => !j.Isdeleted);
+        IQueryable<Job> jobQuery = _jobRepositroy.GetQueryable().Where(j => !j.Isdeleted && j.Createdtime.Date <= jobTableViewModel.ToDate.Date && j.Createdtime.Date >= jobTableViewModel.FromDate.Date);
 
         if (!string.IsNullOrEmpty(jobTableViewModel.SearchQuery))
         {
             jobQuery = jobQuery.Where(j => j.CompanyName.ToLower().Contains(jobTableViewModel.SearchQuery.Trim().ToLower())
                                 || j.Title.ToLower().Contains(jobTableViewModel.SearchQuery.Trim().ToLower()));
         }
+
+
 
         int totalItems = jobQuery.Count();
         int page = jobTableViewModel.CurrentPage;

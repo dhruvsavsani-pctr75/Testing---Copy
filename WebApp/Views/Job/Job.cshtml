@@ -24,7 +24,20 @@
             <form id="jobtableStatus">
                 <input type="text" name="CurrentPage" id="CurrentPage" class="d-none" hidden>
                 <input type="text" name="PageSize" id="PageSize" class="d-none" hidden>
-                <input type="text" name="SearchQuery" id="SearchQuery" placeholder="Search job" onkeyup="getJobTable()">
+                <div class="d-flex gap-2">
+                    <input type="text" name="SearchQuery" id="SearchQuery" placeholder="Search job" class="form-control"
+                        onkeyup="getJobTable()">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" name="FromDate" id="orderTableFromDate"
+                            placeholder="FromDate" onchange="getJobTable()">
+                        <label for="orderTableFromDate">From Date</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="date" class="form-control" name="ToDate" id="orderTableToDate" placeholder="ToDate"
+                            onchange="getJobTable()">
+                        <label for="orderTableFromDate">To Date</label>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -54,9 +67,35 @@
 
 @section jobscript {
     <script>
+        function setMaxDate() {
+            const today = new Date().toISOString().split('T')[0];
+            $('#orderTableFromDate').attr('max', today);
+            $('#orderTableToDate').attr('max', today);
+        }
+
         function getJobTable() {
             let form = $('#jobtableStatus')[0]
             let formData = new FormData(form)
+
+            let orderTableFromDate = $('#orderTableFromDate').val();
+            let orderTableToDate = $('#orderTableToDate').val();
+            let today = new Date().toISOString().split('T')[0];  // Get today's date in 'YYYY-MM-DD' format
+
+            if (orderTableToDate < orderTableFromDate) {
+
+                toastr.error("To Date must be greater than From Date.");
+                return;
+            }
+
+            if (orderTableToDate > today) {
+                toastr.error("To Date cannot be greater than today's date.");
+                return;
+            }
+
+            if (orderTableFromDate > today) {
+                toastr.error("From Date cannot be greater than today's date.");
+                return;
+            }
 
             for (var pair of formData.entries()) {
                 console.log(pair[0] + ": " + pair[1]);
@@ -113,14 +152,11 @@
             })
         }
 
-        function applyJobView(id) {
-
-        }
-
         $(document).ready(function () {
             $('#PageSize').val('5')
             $('#CurrentPage').val('1')
             getJobTable()
+            setMaxDate()
         })
     </script>
 }

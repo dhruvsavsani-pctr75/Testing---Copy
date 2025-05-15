@@ -7,10 +7,30 @@
     <form id="jobApplicationTableStatus">
         <input type="text" name="CurrentPage" id="CurrentPage" class="d-none" hidden>
         <input type="text" name="PageSize" id="PageSize" class="d-none" hidden>
-        <input type="text" name="SearchQuery" id="SearchQuery" placeholder="Search job application" class="mb-3"
-            onkeyup="">
+        <div class="d-flex gap-2 mb-4">
+            <input type="text" name="SearchQuery" id="SearchQuery" placeholder="Search job" class="form-control w-25"
+                onkeyup="getJobApplicationTable()">
+            <div class="form-floating">
+                <input type="date" class="form-control" name="FromDate" id="orderTableFromDate" placeholder="FromDate"
+                    onchange="getJobApplicationTable()">
+                <label for="orderTableFromDate">From Date</label>
+            </div>
+            <div class="form-floating">
+                <input type="date" class="form-control" name="ToDate" id="orderTableToDate" placeholder="ToDate"
+                    onchange="getJobApplicationTable()">
+                <label for="orderTableFromDate">To Date</label>
+            </div>
+            <select class="form-select w-25" aria-label="Default select example" name="Status" onchange="getJobApplicationTable()">
+                <option value="Select" disabled selected>Select a job application status</option>
+                <option value="All">All</option>
+                <option value="Applied">Applied</option>
+                <option value="Interviewing">Interviewing</option>
+                <option value="Offered">Offered</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
     </form>
-    <a href="/job" class="mb-4">
+    <a href="/job" class="mb-5">
         <button type="button" class="btn btn-primary">Back</button>
         <div id="jobApplicationTableDiv">
     </a>
@@ -32,7 +52,7 @@
 
                 <form id="jobApplicationStatusForm">
                     <select class="form-select" aria-label="Default select example" name="Status">
-                        <option value="Select" selected>Select a job application status</option>
+                        <option value="Select" disabled selected>Select a job application status</option>
                         <option value="Applied">Applied</option>
                         <option value="Interviewing">Interviewing</option>
                         <option value="Offered">Offered</option>
@@ -71,6 +91,12 @@
 
 @section jobapplicationscript {
     <script>
+        function setMaxDate() {
+            const today = new Date().toISOString().split('T')[0];
+            $('#orderTableFromDate').attr('max', today);
+            $('#orderTableToDate').attr('max', today);
+        }
+
         function getJobApplicationTable() {
             let form = $('#jobApplicationTableStatus')[0]
             let formData = new FormData(form)
@@ -79,20 +105,40 @@
                 console.log(pair[0] + ": " + pair[1]);
             } *@
 
-                $.ajax({
-                    url: '/jobapplicationtable',
-                    method: 'post',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function (res) {
-                        $('#jobApplicationTableDiv').html(res)
-                        $('#orderPageSize').val($('#PageSize').val())
-                    },
-                    error: function (err) {
-                        toastr.error(err)
-                    }
-                })
+                let orderTableFromDate = $('#orderTableFromDate').val();
+            let orderTableToDate = $('#orderTableToDate').val();
+            let today = new Date().toISOString().split('T')[0];  // Get today's date in 'YYYY-MM-DD' format
+
+            if (orderTableToDate < orderTableFromDate) {
+
+                toastr.error("To Date must be greater than From Date.");
+                return;
+            }
+
+            if (orderTableToDate > today) {
+                toastr.error("To Date cannot be greater than today's date.");
+                return;
+            }
+
+            if (orderTableFromDate > today) {
+                toastr.error("From Date cannot be greater than today's date.");
+                return;
+            }
+
+            $.ajax({
+                url: '/jobapplicationtable',
+                method: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    $('#jobApplicationTableDiv').html(res)
+                    $('#orderPageSize').val($('#PageSize').val())
+                },
+                error: function (err) {
+                    toastr.error(err)
+                }
+            })
         }
 
         function updatePageSize() {
@@ -170,6 +216,7 @@
             $('#PageSize').val('5')
             $('#CurrentPage').val('1')
             getJobApplicationTable()
+            setMaxDate()
         })
     </script>
 }
