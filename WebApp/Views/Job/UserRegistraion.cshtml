@@ -9,7 +9,7 @@
     <form action="/userregistration" method="post">
         <div class="mb-3">
             <label for="jobTitle" class="form-label fs-4">Username</label>
-            <input type="text" class="form-control mb-1" id="jobTitle" placeholder="Enter job title" asp-for="Username">
+            <input type="text" class="form-control mb-1" id="jobTitle" placeholder="Enter username" asp-for="Username">
             <p class="text-danger fw-bold">@Html.ValidationMessageFor(m => m.Username)</p>
         </div>
         <div class="mb-3">
